@@ -35,6 +35,7 @@ src/
 │   │
 │   ├── shared/                            # Módulos y utilidades transversales
 │   │   ├── components/                    # Componentes globales reutilizables (ej. Loading)
+│   │   ├── directives/                    # Directivas globales reutilizables (ej. AnimateOnScroll)
 │   │   ├── layout/                        # Estructura del layout principal (Navbar, Footer)
 │   │   └── services/                      # Lógica de negocio y servicios globales (ej. CvData)
 │   │
@@ -118,13 +119,14 @@ Esto garantiza que los usuarios del portafolio vean el título y los metadatos p
 
 ---
 
-## 🎨 4. Sistema de Diseño (Glassmorphism & Acrílico)
+## 🎨 4. Sistema de Diseño (Glassmorphism & Acrílico) y UX
 
 El portafolio destaca visualmente por un estilo elegante y premium enfocado en la temática de programación:
 
 - **Variables CSS Centralizadas**: Colores, bordes luminosos y sombras dinámicas se definen utilizando HSL para mantener la armonía cromática.
 - **Efecto Acrílico**: Tarjetas y componentes utilizan combinaciones de `backdrop-filter: blur(16px)` con bordes semi-transparentes y resplandores degradados.
-- **Carga Diferida (`@defer`)**: Las secciones pesadas del portafolio (como las habilidades avanzadas, experiencia e historial educativo) se cargan de forma diferida cuando entran en el viewport del navegador, reduciendo el tamaño del bundle inicial y permitiendo que la web sea interactiva casi al instante.
+- **Carga Diferida y Animaciones On-Scroll**: Las secciones pesadas del portafolio se cargan de forma diferida en segundo plano usando `@defer (on idle)`. Cuando el usuario hace scroll hacia ellas, una directiva personalizada (`appAnimateOnScroll` usando `IntersectionObserver`) gatilla una suave animación CSS de entrada ("fade-in-down"), mejorando significativamente el rendimiento y la percepción visual.
+- **Visualización Avanzada de Certificados**: En la sección de educación, los certificados en imagen se abren en un modal personalizado con fondo cristalino. El modal permite ajustar el zoom (hasta un 200%) mediante controles UI interactivos y arrastrar la imagen (drag-to-pan) de manera natural con el cursor o gestos táctiles, adaptándose libremente a los bordes sin recortes gracias a su optimización estructural de CSS.
 
 ---
 
