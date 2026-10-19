@@ -10,7 +10,7 @@ El objetivo de esta guía es documentar detalladamente la arquitectura, las deci
 
 - **Framework**: Angular 22 (Standalone Components, Señales para reactividad local, `@defer` para carga diferida).
 - **Animaciones**: Anime.js v4 (efecto staggered y animaciones elásticas premium).
-- **Estilos**: Vanilla CSS/SCSS con un sistema de diseño basado en **Glassmorphism / Acrílico translúcido** y variables HSL personalizadas.
+- **Estilos**: SCSS a mano (sin librerías de UI) con un sistema de diseño basado en **Glassmorphism / Acrílico translúcido** y variables CSS personalizadas.
 - **Localización**: `@angular/localize` nativo (Soporte completo bilingüe Español/Inglés).
 - **CI/CD**: GitHub Actions para despliegue automatizado y versionado.
 
@@ -29,8 +29,10 @@ src/
 │   │   │   ├── about.scss
 │   │   │   └── about.ts
 │   │   ├── contact/                       # Formulario de contacto integrado con Web3Forms
-│   │   ├── education/                     # Línea de tiempo académica y certificaciones
-│   │   ├── experience/                    # Trayectoria laboral con colapsables interactivos
+│   │   │   └── services/                  # send-mailer.service.ts (envío vía HttpClient)
+│   │   ├── education/                     # Certificaciones, estudios, idiomas y modal de imagen con zoom
+│   │   ├── experience/                    # Trayectoria laboral en línea de tiempo
+│   │   ├── projects/                      # Cards de proyectos destacados con iconos de tecnologías
 │   │   └── skills/                        # Grilla de habilidades técnicas clasificadas
 │   │
 │   ├── shared/                            # Módulos y utilidades transversales
@@ -52,8 +54,13 @@ src/
 ├── index.html                             # Plantilla HTML base del portafolio
 ├── index.redirect.html                    # Redireccionador raíz de idioma para producción
 ├── main.ts                                # Punto de entrada de la aplicación Angular
-└── styles.scss                            # Sistema de diseño global (Variables HSL, reset)
+└── styles.scss                            # Sistema de diseño global (variables CSS, reset, utilidades)
+
+public/                                    # Assets estáticos (avatar, certificados, favicon, sitemap)
+└── icons/                                 # Logos SVG de tecnologías (se colorean con CSS mask)
 ```
+
+> Para la guía técnica detallada (convenciones de código, sistema de diseño, flujo de i18n y recetas para modificar el proyecto) consulta [`AGENTS.md`](./AGENTS.md).
 
 ---
 
@@ -123,8 +130,8 @@ Esto garantiza que los usuarios del portafolio vean el título y los metadatos p
 
 El portafolio destaca visualmente por un estilo elegante y premium enfocado en la temática de programación:
 
-- **Variables CSS Centralizadas**: Colores, bordes luminosos y sombras dinámicas se definen utilizando HSL para mantener la armonía cromática.
-- **Efecto Acrílico**: Tarjetas y componentes utilizan combinaciones de `backdrop-filter: blur(16px)` con bordes semi-transparentes y resplandores degradados.
+- **Variables CSS Centralizadas**: Colores, bordes luminosos y transiciones se definen en `:root` (`styles.scss`) con una paleta oscura y acentos morado (`#a855f7`) y cian (`#06b6d4`).
+- **Efecto Acrílico**: Tarjetas y componentes utilizan combinaciones de `backdrop-filter: blur(10px)` con bordes semi-transparentes y resplandores degradados.
 - **Carga Diferida y Animaciones On-Scroll**: Las secciones pesadas del portafolio se cargan de forma diferida en segundo plano usando `@defer (on idle)`. Cuando el usuario hace scroll hacia ellas, una directiva personalizada (`appAnimateOnScroll` usando `IntersectionObserver`) gatilla una suave animación CSS de entrada ("fade-in-down"), mejorando significativamente el rendimiento y la percepción visual.
 - **Visualización Avanzada de Certificados**: En la sección de educación, los certificados en imagen se abren en un modal personalizado con fondo cristalino. El modal permite ajustar el zoom (hasta un 200%) mediante controles UI interactivos y arrastrar la imagen (drag-to-pan) de manera natural con el cursor o gestos táctiles, adaptándose libremente a los bordes sin recortes gracias a su optimización estructural de CSS.
 
@@ -136,7 +143,7 @@ El proceso de integración y despliegue continuo (CI/CD) se realiza de forma aut
 
 1.  **Construcción de Producción**: Compila la aplicación generando de forma nativa los directorios de idioma mediante `npm run build:prod`.
 2.  **Copias Post-compilación**: Copia el script redireccionador `index.redirect.html` a la raíz de la carpeta de distribución como `index.html`.
-3.  **Sincronización Automática**: Clona el repositorio público final (`joordydev.github.io.git`), limpia el contenido antiguo preservando el historial Git, y copia las nuevas carpetas `/es/` y `/en/`.
+3.  **Sincronización Automática**: Clona el repositorio público final (`joordydev.github.io.git`), limpia el contenido antiguo preservando el historial Git, y copia las nuevas carpetas `/es/` y `/en/`, además del `README.md`, el `sitemap.xml` y el archivo de verificación de Google.
 4.  **Publicación**: Realiza `commit` y sube los cambios actualizados automáticamente, permitiendo que tu web esté siempre al día en producción.
 
 ---
